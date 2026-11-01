@@ -84,3 +84,9 @@ typings/
 .dynamodb/
 # Empty local placeholder
 /0
+
+# Local schedule backups
+/garbage_schedule_2022.csv
+/garbage_schedule_2023.csv
+/garbage_schedule_2024.csv
+/garbage_schedule_2025.csv
