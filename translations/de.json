@@ -1,4 +1,6 @@
 {
-    "GARBAGEENTRIESLEFT": "Nur noch {entriesLeft} Einträge im Abfallkalender",
-    "REMEMBERADDINGPICKUPS": "Füge weitere Einträge hinzu, um dieses Modul weiterhin benutzen zu können"
+    "GARBAGEENTRIESLEFT":  "Nur noch {entriesLeft} EintrÃ¤ge im Abfallkalender",
+    "REMEMBERADDINGPICKUPS":  "FÃ¼ge weitere EintrÃ¤ge hinzu, um dieses Modul weiterhin benutzen zu kÃ¶nnen",
+    "NOPICKUPS":  "No collections in the selected period.",
+    "SCHEDULEERROR":  "Unable to read the collection schedule."
 }

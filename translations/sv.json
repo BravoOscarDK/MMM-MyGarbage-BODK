@@ -1,4 +1,6 @@
 {
-    "GARBAGEENTRIESLEFT": "Det finns bara {entriesLeft} datum kvar i sopkalendern",
-    "REMEMBERADDINGPICKUPS": "Kom ihåg att lägg till nya datum"
+    "GARBAGEENTRIESLEFT":  "Det finns bara {entriesLeft} datum kvar i sopkalendern",
+    "REMEMBERADDINGPICKUPS":  "Kom ihÃ¥g att lÃ¤gg till nya datum",
+    "NOPICKUPS":  "No collections in the selected period.",
+    "SCHEDULEERROR":  "Unable to read the collection schedule."
 }

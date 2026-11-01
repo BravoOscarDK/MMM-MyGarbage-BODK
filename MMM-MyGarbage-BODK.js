@@ -1,4 +1,4 @@
-Module.register('MMM-MyGarbage', {
+Module.register('MMM-MyGarbage-BODK', {
 
   // Default values
   defaults: {
@@ -12,7 +12,7 @@ Module.register('MMM-MyGarbage', {
 
   // Define stylesheet
   getStyles: function () {
-    return ["MMM-MyGarbage.css"];
+    return ["MMM-MyGarbage-BODK.css"];
   },
 
   // Define required scripts.
@@ -26,7 +26,8 @@ Module.register('MMM-MyGarbage', {
       en: "translations/en.json",
       nl: "translations/nl.json",
       de: "translations/de.json",
-      sv: "translations/sv.json"
+      sv: "translations/sv.json",
+      da: "translations/da.json"
     }
   },
 
@@ -36,17 +37,19 @@ Module.register('MMM-MyGarbage', {
 
   start: function () {
     Log.info('Starting module: ' + this.name);
-    this.sendSocketNotification('MMM-MYGARBAGE-CONFIG', this.config);
+
     this.nextPickups = [];
-    this.getPickups();
+    this.loaded = false;
+    this.loadError = false;
     this.timer = null;
+    this.getPickups();
   },
 
   // Read garbage_schedule.csv file
   getPickups: function () {
     clearTimeout(this.timer);
     this.timer = null;
-    this.sendSocketNotification("MMM-MYGARBAGE-GET", { weeksToDisplay: this.config.weeksToDisplay, instanceId: this.identifier });
+    this.sendSocketNotification("MMM-MYGARBAGE-BODK-GET", { weeksToDisplay: this.config.weeksToDisplay, instanceId: this.identifier, alert: this.config.alert });
 
     //Set check times
     var self = this;
@@ -56,10 +59,15 @@ Module.register('MMM-MyGarbage', {
   },
 
   socketNotificationReceived: function (notification, payload) {
-    if (notification == "MMM-MYGARBAGE-RESPONSE" + this.identifier && payload.length > 0) {
+    if (notification == "MMM-MYGARBAGE-BODK-RESPONSE" + this.identifier) {
       this.nextPickups = payload;
+      this.loaded = true;
+      this.loadError = false;
       this.updateDom(1000);
-    } else if (notification == "MMM-MYGARBAGE-NOENTRIES") { //Pass Alert on
+    } else if (notification == "MMM-MYGARBAGE-BODK-ERROR" + this.identifier) {
+      this.loadError = true;
+      this.updateDom(1000);
+    } else if (notification == "MMM-MYGARBAGE-BODK-NOENTRIES" + this.identifier) { //Pass Alert on
       this.sendNotification("SHOW_ALERT", {
         title: this.translate("GARBAGEENTRIESLEFT", { entriesLeft: payload }),
         message: this.translate("REMEMBERADDINGPICKUPS"),
@@ -69,36 +77,19 @@ Module.register('MMM-MyGarbage', {
     }
   },
 
-  // Create Garbage Icons from garbage_icons.svg
-  svgIconFactory: function (color) {
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttributeNS(null, "class", "garbage-icon");
-    //Switch for Legacy files
-    switch (color) {
-      case 'GreenBin':
-        svg.setAttributeNS(null, "style", "fill: #00A651");
-        break;
-      case 'GarbageBin':
-        svg.setAttributeNS(null, "style", "fill: #787878");
-        break;
-      case 'PaperBin':
-        svg.setAttributeNS(null, "style", "fill: #0059ff");
-        break;
-      default:
-        svg.setAttributeNS(null, "style", "fill: " + color);
-        break;
-    }
-    var use = document.createElementNS('http://www.w3.org/2000/svg', "use");
-    use.setAttributeNS("http://www.w3.org/1999/xlink", "href", this.file("garbage_icons.svg#bin"));
-    svg.appendChild(use);
-    return (svg);
+  // Icons are styled with background images in the module stylesheet.
+  iconFactory: function (glyph) {
+    var icon = document.createElement("span");
+    icon.className = "garbage-icon " + glyph;
+    icon.setAttribute("role", "img");
+    icon.setAttribute("aria-label", glyph);
+    return icon;
   },
-
   getDom: function () {
     var wrapper = document.createElement("div");
 
-    if (this.nextPickups.length == 0) {
-      wrapper.innerHTML = this.translate("LOADING");
+    if (this.loadError || this.nextPickups.length == 0) {
+      wrapper.textContent = this.translate(this.loadError ? "SCHEDULEERROR" : (this.loaded ? "NOPICKUPS" : "LOADING"));
       wrapper.className = "dimmed light small";
       return wrapper;
     }
@@ -114,8 +105,7 @@ Module.register('MMM-MyGarbage', {
     var currentFadeStep = 0;
     // End Fade effect
 
-    // this.nextPickups.forEach( function(pickup) {
-    for (i = 0; i < this.nextPickups.length; i++) {
+    for (var i = 0; i < this.nextPickups.length; i++) {
       if (i == this.config.limitTo) {
         break;
       }
@@ -126,12 +116,12 @@ Module.register('MMM-MyGarbage', {
       var pickupContainer = document.createElement("div");
       pickupContainer.classList.add("garbage-container");
 
-      //Add date to Garbage Pickup
+      //add pickup date
       var dateContainer = document.createElement("span");
       dateContainer.classList.add("garbage-date");
 
       //Formats Garbage Pickup Date
-      moment.locale();
+      moment.locale(config.language);
       var today = moment().startOf("day");
       var pickUpDate = moment(pickup.pickupDate);
       if (today.isSame(pickUpDate)) {
@@ -149,11 +139,39 @@ Module.register('MMM-MyGarbage', {
       //Add Garbage icons
       var iconContainer = document.createElement("span");
       iconContainer.classList.add("garbage-icon-container");
-      for (var key in pickup) {
-        //Convert date strings to moment.js Date objects
-        if (key != "pickupDate" && key != "WeekStarting")
-          if (pickup[key])
-            iconContainer.appendChild(this.svgIconFactory(key)); //TODO COLORS
+      
+      if (pickup.Farligt) {
+        iconContainer.appendChild(this.iconFactory("farlig"));
+      }
+      if (pickup.Glas) {
+        iconContainer.appendChild(this.iconFactory("glas"));
+      }
+      if (pickup.Have) {
+        iconContainer.appendChild(this.iconFactory("have"));
+      }
+      if (pickup.Mad) {
+        iconContainer.appendChild(this.iconFactory("mad"));
+      }
+      if (pickup.Drikke) {
+        iconContainer.appendChild(this.iconFactory("drikke"));
+      }
+      if (pickup.Metal) {
+        iconContainer.appendChild(this.iconFactory("metal"));
+      }
+      if (pickup.Papir) {
+        iconContainer.appendChild(this.iconFactory("papir"));
+      }
+      if (pickup.Pap) {
+        iconContainer.appendChild(this.iconFactory("pap"));
+      }
+      if (pickup.Plast) {
+        iconContainer.appendChild(this.iconFactory("plast"));
+      }
+      if (pickup.Rest) {
+        iconContainer.appendChild(this.iconFactory("rest"));
+      }
+      if (pickup.Stor) {
+        iconContainer.appendChild(this.iconFactory("stor"));
       }
 
       pickupContainer.appendChild(iconContainer);

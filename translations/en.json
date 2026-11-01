@@ -1,4 +1,6 @@
 {
-    "GARBAGEENTRIESLEFT": "Only {entriesLeft} entries in garbage calendar",
-    "REMEMBERADDINGPICKUPS": "Be sure to add new entries for further use"
+    "GARBAGEENTRIESLEFT":  "Only {entriesLeft} entries in garbage calendar",
+    "REMEMBERADDINGPICKUPS":  "Be sure to add new entries for further use",
+    "NOPICKUPS":  "No collections in the selected period.",
+    "SCHEDULEERROR":  "Unable to read the collection schedule."
 }

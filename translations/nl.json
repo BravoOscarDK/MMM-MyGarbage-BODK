@@ -1,4 +1,6 @@
 {
-    "GARBAGEENTRIESLEFT": "Nog maar {entriesLeft} items in de garbage kalender",
-    "REMEMBERADDINGPICKUPS": "Zorg dat je nieuwe datums toevoegt voor verder gebruik!"
+    "GARBAGEENTRIESLEFT":  "Nog maar {entriesLeft} items in de garbage kalender",
+    "REMEMBERADDINGPICKUPS":  "Zorg dat je nieuwe datums toevoegt voor verder gebruik!",
+    "NOPICKUPS":  "No collections in the selected period.",
+    "SCHEDULEERROR":  "Unable to read the collection schedule."
 }

@@ -1,0 +1,86 @@
+.MMM-MyGarbage-BODK .garbage-container {
+  line-height: 4.10;
+  font-size: var(--text-sm, 20px);
+  margin: 0;
+  padding: 0;
+  border-bottom: solid 1px #222;
+  position: relative;
+  text-align: left;
+}
+
+.MMM-MyGarbage-BODK .garbage-date {
+  color: #FFF;
+}
+
+.MMM-MyGarbage-BODK .garbage-icon-container {
+  white-space: nowrap;
+  position: absolute;
+  right: 0;
+  top: 6px;
+  line-height: 70px;
+}
+
+.MMM-MyGarbage-BODK .garbage-icon {
+  width: 70px;
+  height: 70px;
+  vertical-align: bottom;
+  display: inline-block;
+  margin-left: 4px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.farlig {
+  background-color: #E20F1E;
+  background-image: url("imgs/FARLIGT_AFFALD_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.glas {
+  background-color: #231F20;
+  background-image: url("imgs/GLAS_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.have {
+  background-color: #006432;
+  background-image: url("imgs/HAVEAFFALD_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.mad {
+  background-color: #01A04C;
+  background-image: url("imgs/MADAFFALD_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.drikke {
+  background-color: #BEA064;
+  background-image: url("imgs/MAD-DRIKKEKARTONER_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.metal {
+  background-color: #141414;
+  background-image: url("imgs/METAL_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.papir {
+  background-color: #0082BE;
+  background-image: url("imgs/PAPIR_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.pap {
+  background-color: #BEA064;
+  background-image: url("imgs/PAP_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.plast {
+  background-color: #961E82;
+  background-image: url("imgs/PLAST_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.rest {
+  background-color: #141414;
+  background-image: url("imgs/RESTAFFALD_rgb.svg");
+}
+
+.MMM-MyGarbage-BODK .garbage-icon.stor {
+  background-color: #141414;
+  background-image: url("imgs/STORSKRALD_rgb.svg");
+}
