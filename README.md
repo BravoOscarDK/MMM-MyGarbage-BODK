@@ -1,13 +1,12 @@
 # MMM-MyGarbage-BODK
 
-Affaldskalender til [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror), vedligeholdt af BODK.
-Viser afhentningsdatoer med danske affaldspiktogrammer. Ikoner og layout følger med modulet; særskilt ikonopsætning i `custom.css` er ikke nødvendig.
+A garbage collection calendar for [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror), maintained by [BODK](https://github.com/BravoOscarDK).
 
-
+Displays upcoming collection dates with Danish waste sorting pictograms. Icons and layout are included in the module; no icon configuration in `custom.css` is required.
 
 ## Installation
 
-Klon projektet fra BODK, og installér afhængighederne:
+Clone the repository into your MagicMirror modules directory and install its dependencies:
 
 ```sh
 cd ~/MagicMirror/modules
@@ -16,17 +15,17 @@ cd MMM-MyGarbage-BODK
 npm install
 ```
 
-Brug den Node.js-version, din MagicMirror²-version kræver. Koden er gennemgået mod MagicMirror² master, men er endnu ikke testet i en kørende MagicMirror²-installation.
+Use the Node.js version required by your MagicMirror² release. The code has been reviewed against MagicMirror² master, but the updated module has not yet been tested in a running MagicMirror² installation.
 
-## Konfiguration
+## Configuration
 
-Tilføj i `modules` i MagicMirrors `config/config.js`:
+Add this entry to the `modules` array in MagicMirror's `config/config.js`:
 
 ```js
 {
   module: "MMM-MyGarbage-BODK",
   position: "top_left",
-  header: "Affaldskalender",
+  header: "Waste Collection",
   config: {
     alert: 4,
     weeksToDisplay: 2,
@@ -38,46 +37,69 @@ Tilføj i `modules` i MagicMirrors `config/config.js`:
 }
 ```
 
-Sæt MagicMirrors globale `language` til `"da"` for dansk visning.
+Date labels follow MagicMirror's global `language` setting. Use `"en"` for English or `"da"` for Danish. The wording inside the pictogram images remains Danish.
 
-| Indstilling | Betydning | Standard |
+| Option | Description | Default |
 | --- | --- | --- |
-| `alert` | Advarsel ved højst dette antal fremtidige afhentninger; `false` slår den fra | `false` |
-| `weeksToDisplay` | Antal uger frem, fra og med i dag | `2` |
-| `limitTo` | Højeste antal viste afhentninger | `99` |
-| `dateFormat` | Moment-format for datoer længere fremme | `"dddd D MMMM"` |
-| `fade` | Nedton senere afhentninger | `true` |
-| `fadePoint` | Startpunkt for nedtoning, mellem 0 og 1 | `0.25` |
+| `alert` | Warn when the number of remaining collection entries is at or below this threshold; use `false` to disable | `false` |
+| `weeksToDisplay` | Number of weeks to display, starting today | `2` |
+| `limitTo` | Maximum number of collection entries to display | `99` |
+| `dateFormat` | Moment date format for dates at least a week away | `"dddd D MMMM"` |
+| `fade` | Fade later collection entries | `true` |
+| `fadePoint` | Point at which fading starts, from 0 to 1 | `0.25` |
 
-## Afhentningsplan
+## Collection schedule
 
-Redigér `garbage_schedule.csv` i modulets mappe. Filen skal bruge komma som separator og følgende kolonner:
+Edit `garbage_schedule.csv` in the module directory. Use commas as separators and keep these column names:
 
 ```csv
-WeekStarting,Farligt,Glas,Have,Mad,Drikke,Metal,Papir,Pap,Plast,Rest,Stor
-11/02/26,0,0,0,1,0,0,0,0,0,1,0
-11/04/26,0,0,0,0,1,0,1,0,1,0,0
+WeekStarting,Farligt,Have,Stor,Pap,Papir,Plast,Drikke,Glas,Metal,Rest,Mad
+11/02/26,0,0,0,0,0,0,0,0,0,1,1
+11/04/26,0,0,0,0,1,1,1,0,0,0,0
 ```
 
-Datoformatet er `MM/DD/YY`: `11/02/26` betyder 2. november 2026.
-`0` eller et tomt felt betyder ingen afhentning; brug `1` for afhentning.
-`Drikke` er mad- og drikkekartoner. Én række svarer til én afhentningsdato.
+- Dates use `MM/DD/YY`: `11/02/26` means November 2, 2026.
+- Use `1` for a collection and `0` or an empty field for no collection.
+- Each row represents one collection date.
+- You can rearrange columns if you move each heading together with its values. Keep the headings unchanged, including capitalization.
+- Rows are sorted by date automatically. Changing CSV column order does not change the icon order on screen.
 
-Planen læses hver time. Rækker sorteres efter dato. En tom periode vises med en besked; læsefejl og ugyldige datoer vises som en fejlbesked og logges på serveren.
+The schedule is read every hour, so CSV edits do not require a restart. Empty periods display a message. File errors and invalid dates display an error message and are logged on the server.
 
-## Ikoner og layout
+`garbage_schedule_STANDARD.csv` is a reference template with helper comments. Remove those comments before using its rows in the live `garbage_schedule.csv`; the live CSV parser does not support trailing helper comments. Yearly backup files are kept locally and excluded from Git.
 
-De 11 SVG-billeder ligger i `imgs/`. Farver, relative billedstier og størrelsen 70 × 70 px defineres i `MMM-MyGarbage-BODK.css`.
-Fjern den tidligere `.MMM-MyGarbage`-blok fra `custom.css` efter opgradering.
+## Danish icons: Danish and English names
 
-## Kontrol
+The 11 SVG files are stored in `imgs/`. Their filenames and printed labels remain Danish. The table follows the column order in the schedule.
+
+| Icon | CSV column | Dansk | English |
+| --- | --- | --- | --- |
+| <img src="imgs/FARLIGT_AFFALD_rgb.svg" width="70" alt="Farligt affald / Hazardous waste"> | `Farligt` | Farligt affald | Hazardous waste |
+| <img src="imgs/HAVEAFFALD_rgb.svg" width="70" alt="Haveaffald / Garden waste"> | `Have` | Haveaffald | Garden waste |
+| <img src="imgs/STORSKRALD_rgb.svg" width="70" alt="Storskrald / Bulky waste"> | `Stor` | Storskrald | Bulky waste |
+| <img src="imgs/PAP_rgb.svg" width="70" alt="Pap / Cardboard"> | `Pap` | Pap | Cardboard |
+| <img src="imgs/PAPIR_rgb.svg" width="70" alt="Papir / Paper"> | `Papir` | Papir | Paper |
+| <img src="imgs/PLAST_rgb.svg" width="70" alt="Plast / Plastic"> | `Plast` | Plast | Plastic |
+| <img src="imgs/MAD-DRIKKEKARTONER_rgb.svg" width="70" alt="Mad- og drikkekartoner / Food and beverage cartons"> | `Drikke` | Mad- og drikkekartoner | Food and beverage cartons |
+| <img src="imgs/GLAS_rgb.svg" width="70" alt="Glas / Glass"> | `Glas` | Glas | Glass |
+| <img src="imgs/METAL_rgb.svg" width="70" alt="Metal / Metal"> | `Metal` | Metal | Metal |
+| <img src="imgs/RESTAFFALD_rgb.svg" width="70" alt="Restaffald / Residual waste"> | `Rest` | Restaffald | Residual waste |
+| <img src="imgs/MADAFFALD_rgb.svg" width="70" alt="Madaffald / Food waste"> | `Mad` | Madaffald | Food waste |
+
+## Appearance
+
+Colors, relative image paths and the 70 × 70 px icon size are defined in `MMM-MyGarbage-BODK.css`.
+
+When upgrading from your previous setup, remove the old `.MMM-MyGarbage` icon block from `custom.css`.
+
+## Validation
 
 ```sh
 npm run check
 ```
 
-Dette kontrollerer JavaScript-syntaks. Kontrollér også visningen på dit MagicMirror.
+This checks JavaScript syntax. Also verify the layout and collection dates on your MagicMirror.
 
-## Licens
+## License
 
-MIT. Se [LICENSE](LICENSE) for copyrightmeddelelser og licensvilkår.
+MIT. See [LICENSE](LICENSE) for copyright notices and license terms.
