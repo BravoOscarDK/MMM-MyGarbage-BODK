@@ -1,7 +1,61 @@
 Module.register('MMM-MyGarbage-BODK', {
 
+  text: function (key, values = {}) {
+    var texts = {
+      "da": {
+        "GARBAGEENTRIESLEFT": "Kun {entriesLeft} afhentninger tilbage i kalenderen",
+        "NOPICKUPS": "Ingen afhentninger i den valgte periode.",
+        "REMEMBERADDINGPICKUPS": "Husk at tilføje nye afhentninger",
+        "SCHEDULEERROR": "Afhentningsplanen kunne ikke læses.",
+        "LOADING": "Indlæser...",
+        "TODAY": "I dag",
+        "TOMORROW": "I morgen"
+      },
+      "de": {
+        "GARBAGEENTRIESLEFT": "Nur noch {entriesLeft} EintrÃ¤ge im Abfallkalender",
+        "REMEMBERADDINGPICKUPS": "FÃ¼ge weitere EintrÃ¤ge hinzu, um dieses Modul weiterhin benutzen zu kÃ¶nnen",
+        "NOPICKUPS": "No collections in the selected period.",
+        "SCHEDULEERROR": "Unable to read the collection schedule.",
+        "LOADING": "Laden...",
+        "TODAY": "Heute",
+        "TOMORROW": "Morgen"
+      },
+      "en": {
+        "GARBAGEENTRIESLEFT": "Only {entriesLeft} entries in garbage calendar",
+        "REMEMBERADDINGPICKUPS": "Be sure to add new entries for further use",
+        "NOPICKUPS": "No collections in the selected period.",
+        "SCHEDULEERROR": "Unable to read the collection schedule.",
+        "LOADING": "Loading...",
+        "TODAY": "Today",
+        "TOMORROW": "Tomorrow"
+      },
+      "nl": {
+        "GARBAGEENTRIESLEFT": "Nog maar {entriesLeft} items in de garbage kalender",
+        "REMEMBERADDINGPICKUPS": "Zorg dat je nieuwe datums toevoegt voor verder gebruik!",
+        "NOPICKUPS": "No collections in the selected period.",
+        "SCHEDULEERROR": "Unable to read the collection schedule.",
+        "LOADING": "Laden...",
+        "TODAY": "Vandaag",
+        "TOMORROW": "Morgen"
+      },
+      "sv": {
+        "GARBAGEENTRIESLEFT": "Det finns bara {entriesLeft} datum kvar i sopkalendern",
+        "REMEMBERADDINGPICKUPS": "Kom ihÃ¥g att lÃ¤gg till nya datum",
+        "NOPICKUPS": "No collections in the selected period.",
+        "SCHEDULEERROR": "Unable to read the collection schedule.",
+        "LOADING": "Laddar...",
+        "TODAY": "Idag",
+        "TOMORROW": "Imorgon"
+      }
+    };
+    var lang = String(this.config.language || "en").toLowerCase().split(/[-_]/)[0];
+    var value = (Object.hasOwn(texts, lang) ? texts[lang] : texts.en)[key] || texts.en[key] || key;
+    return value.replace(/\{(\w+)\}/g, (match, name) => values[name] === undefined ? match : String(values[name]));
+  },
+
   // Default values
   defaults: {
+    language: "en",
     alert: false,
     weeksToDisplay: 2,
     limitTo: 99,
@@ -69,8 +123,8 @@ Module.register('MMM-MyGarbage-BODK', {
       this.updateDom(1000);
     } else if (notification == "MMM-MYGARBAGE-BODK-NOENTRIES" + this.identifier) { //Pass Alert on
       this.sendNotification("SHOW_ALERT", {
-        title: this.translate("GARBAGEENTRIESLEFT", { entriesLeft: payload }),
-        message: this.translate("REMEMBERADDINGPICKUPS"),
+        title: this.text("GARBAGEENTRIESLEFT", { entriesLeft: payload }),
+        message: this.text("REMEMBERADDINGPICKUPS"),
         imageFA: "recycle",
         timer: "3000"
       });
@@ -89,7 +143,7 @@ Module.register('MMM-MyGarbage-BODK', {
     var wrapper = document.createElement("div");
 
     if (this.loadError || this.nextPickups.length == 0) {
-      wrapper.textContent = this.translate(this.loadError ? "SCHEDULEERROR" : (this.loaded ? "NOPICKUPS" : "LOADING"));
+      wrapper.textContent = this.text(this.loadError ? "SCHEDULEERROR" : (this.loaded ? "NOPICKUPS" : "LOADING"));
       wrapper.className = "dimmed light small";
       return wrapper;
     }
@@ -121,13 +175,13 @@ Module.register('MMM-MyGarbage-BODK', {
       dateContainer.classList.add("garbage-date");
 
       //Formats Garbage Pickup Date
-      moment.locale(config.language);
-      var today = moment().startOf("day");
-      var pickUpDate = moment(pickup.pickupDate);
+      var locale = ["en", "da", "de", "sv", "nl"].includes(String(this.config.language).toLowerCase().split(/[-_]/)[0]) ? String(this.config.language).toLowerCase().split(/[-_]/)[0] : "en";
+      var today = moment().locale(locale).startOf("day");
+      var pickUpDate = moment(pickup.pickupDate).locale(locale);
       if (today.isSame(pickUpDate)) {
-        dateContainer.innerHTML = this.translate("TODAY");
+        dateContainer.innerHTML = this.text("TODAY");
       } else if (moment(today).add(1, "days").isSame(pickUpDate)) {
-        dateContainer.innerHTML = this.translate("TOMORROW");
+        dateContainer.innerHTML = this.text("TOMORROW");
       } else if (moment(today).add(7, "days").isAfter(pickUpDate)) {
         dateContainer.innerHTML = this.capFirst(pickUpDate.format("dddd"));
       } else {

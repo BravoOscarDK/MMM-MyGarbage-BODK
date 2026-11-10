@@ -27,6 +27,7 @@ Add this entry to the `modules` array in MagicMirror's `config/config.js`:
   position: "top_left",
   header: "Waste Collection",
   config: {
+    language: "en",
     alert: 4,
     weeksToDisplay: 2,
     limitTo: 99,
@@ -37,7 +38,7 @@ Add this entry to the `modules` array in MagicMirror's `config/config.js`:
 }
 ```
 
-Date labels follow MagicMirror's global `language` setting. Use `"en"` for English or `"da"` for Danish. The wording inside the pictogram images remains Danish.
+Date labels follow this module's `language` option, which defaults to `"en"`. Use `language: "da"` in the module config for Danish. The wording inside the pictogram images remains Danish.
 
 | Option | Description | Default |
 | --- | --- | --- |
@@ -103,3 +104,9 @@ This checks JavaScript syntax. Also verify the layout and collection dates on yo
 ## License
 
 MIT. See [LICENSE](LICENSE) for copyright notices and license terms.
+
+## Language
+
+English is the default, independently of the MagicMirror global language. Set `language: "da"` in this module's `config` for Danish, or `language: "en"` for English. Unsupported languages fall back to English. Custom labels and device names retain their configured values. Technical logs and diagnostic errors are in English.
+
+German (`de`), Swedish (`sv`) and Dutch (`nl`) collection translations are also supported.
