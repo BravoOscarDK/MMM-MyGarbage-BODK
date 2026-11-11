@@ -6,6 +6,14 @@ A garbage collection calendar for [MagicMirror²](https://github.com/MagicMirror
 
 Displays upcoming collection dates with Danish waste sorting pictograms. Icons and layout are included in the module; no icon configuration in `custom.css` is required.
 
+### Preview
+
+Default calendar display with fictional pickup dates and the existing waste pictograms. Danish CSV column names and asset filenames are preserved. English is the default language.
+
+![MyGarbage example with fictional data](docs/images/example.png)
+
+The [browser preview](docs/preview.html) uses fictional data only; run `npm install` first to provide the local Moment dependency. it does not validate external services or hardware.
+
 ## Requirements
 
 A working MagicMirror² installation and a Node.js version supported by that installation.
