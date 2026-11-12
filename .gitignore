@@ -90,3 +90,13 @@ typings/
 /garbage_schedule_2023.csv
 /garbage_schedule_2024.csv
 /garbage_schedule_2025.csv
+
+# Local agent instructions and editor settings
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+.codex/
+.agents/
+.claude/
+.vscode/
+.idea/
